@@ -6,11 +6,10 @@ from typing import List
 
 class CPModel(JobShopBase):
     def __init__(self, durations: List[List[int]], machines: List[List[int]]):
-        super().__init__(durations, machines)
         self.model = cp_model.CpModel()
         self.starts = None
         self.all_tasks = {}
-        self.addConstraints()
+        super().__init__(durations, machines)
 
     def addConstraints(self):
         task_type = namedtuple("task_type", "start end interval")
@@ -72,17 +71,20 @@ class CPModel(JobShopBase):
         )  # Thời gian lớn nhất để hoàn thành task cuối cùng của tất cả các job chính là thời gian hoàn thành tất cả các jobs (makespan)
         self.model.Minimize(self.obj_var)
 
-    def solve(self, max_time_in_seconds=60.0):
+    def solve(self, max_time_in_seconds=60.0, display=False):
         self.solver = cp_model.CpSolver()
         self.solver.parameters.log_search_progress = True
         self.solver.parameters.max_time_in_seconds = max_time_in_seconds
         status = self.solver.Solve(self.model)
-        stt = makespan = None
+        stt = None
         if status == cp_model.OPTIMAL or status == cp_model.FEASIBLE:
             stt = self.solver.StatusName(status)
-            makespan = self.solver.ObjectiveValue()
+            self.makespan = self.solver.ObjectiveValue()
             self.starts = [
-                [self.solver.Value(self.all_tasks[(i, j)][0]) for j in self.all_machines]
+                [
+                    self.solver.Value(self.all_tasks[(i, j)][0])
+                    for j in self.all_machines
+                ]
                 for i in self.all_jobs
             ]
         # # Print sequences of jobs assigned to each machine.
@@ -102,11 +104,11 @@ class CPModel(JobShopBase):
         #     print(*i)
         else:
             stt = self.solver.StatusName(status)
-            makespan = 0
-        self.display(stt, self.starts, makespan)
+        if display:
+            self.display(stt, self.starts, self.makespan)
+        return self.makespan
 
     def summary(self):
         print("Constraint programming model summary: ")
         print(self.solver.ResponseStats())
         print(self.solver.SolutionInfo())
-

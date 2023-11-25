@@ -11,9 +11,11 @@ class JobShopBase:
         self.horizon = sum(sum(durations, []))
         self.all_jobs = range(self.n_jobs)
         self.all_machines = range(self.n_machines)
+        self.makespan = -1
+        self.addConstraints()
 
     def display(self, status: str, starts: List[List[int]], obj: int):
-        if obj:
+        if obj > 0:
             print(f"{status} : {obj}")
             visualization.DisplayJobshop(
                 starts, self.durations, self.machines, self.__class__.__name__
@@ -24,8 +26,8 @@ class JobShopBase:
     def addConstraints(self):
         pass
 
-    def solve(self):
-        pass
+    def solve(self, display=False):
+        return self.makespan
 
     def summary(self):
         pass

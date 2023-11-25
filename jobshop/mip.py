@@ -5,12 +5,11 @@ from ortools.linear_solver import pywraplp
 
 class MIPModel(JobShopBase):
     def __init__(self, durations: List[List[int]], machines: List[List[int]]):
-        super().__init__(durations, machines)
         self.model = pywraplp.Solver(
             "JSSP", pywraplp.Solver.CBC_MIXED_INTEGER_PROGRAMMING
         )
         self.starts = {}
-        self.addConstraints()
+        super().__init__(durations, machines)
 
     def addConstraints(self):
         """
@@ -84,23 +83,22 @@ class MIPModel(JobShopBase):
             )
         self.model.Minimize(obj_var)
 
-    def solve(self, max_time_in_seconds=60):
+    def solve(self, max_time_in_seconds=60, display=False):
         self.model.set_time_limit(max_time_in_seconds * 1000)
         status = self.model.Solve()
-        makespan = None
         if status == pywraplp.Solver.OPTIMAL or status == pywraplp.Solver.FEASIBLE:
-            makespan = self.model.Objective().Value()
+            self.makespan = self.model.Objective().Value()
             start = [[0] * self.n_machines for _ in self.all_jobs]
             for i in self.all_jobs:
                 for j in self.all_machines:
                     start[i][j] = self.starts[(i, j)].solution_value()
-        else:
-            makespan = 0
         if status == pywraplp.Solver.OPTIMAL:
             status = "OPTIMAL"
         elif status == pywraplp.Solver.FEASIBLE:
             status = "FEASIBLE"
-        self.display(status, start, makespan)
+        if display:
+            self.display(status, start, self.makespan)
+        return self.makespan
 
     def summary(self):
         print("Mixed Integer Programming (MIP) model summary:")
