@@ -4,9 +4,9 @@ from ortools.linear_solver import pywraplp
 
 
 class MIPModel(JobShopBase):
-    def __init__(self, durations: List[List[int]], machines: List[List[int]]):
+    def __init__(self, durations: List[List[int]], machines: List[List[int]], **kwargs):
         self.model = pywraplp.Solver(
-            "JSSP", pywraplp.Solver.CBC_MIXED_INTEGER_PROGRAMMING
+            "JSSP", kwargs.get("solver", pywraplp.Solver.CBC_MIXED_INTEGER_PROGRAMMING)
         )
         self.starts = {}
         super().__init__(durations, machines)
