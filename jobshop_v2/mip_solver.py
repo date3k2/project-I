@@ -25,6 +25,7 @@ class LPJS:
         )
 
     def addConstraints(self):
+        V = 1_000_000
         # Define a dict of start time for each task of each job
         self.start_vars = [defaultdict() for _ in range(self.n_jobs)]
         # Define a dict of tasks including what machine can do the task
@@ -39,13 +40,12 @@ class LPJS:
                         ]
                         break
         # Define variables for assigning task of each job to each machine
-        V = 1_000_000
         self.assignment_task = defaultdict(list)
         assignment_machine = defaultdict(list)
         for job in range(self.n_jobs):
             for task in self.tasks[job]:
                 self.start_vars[job][task] = self.model.NumVar(
-                    0, self.model.infinity(), f"start_job_{job}_task_{task}"
+                    0, V, f"start_job_{job}_task_{task}"
                 )
                 for machine in self.task_machines[task]:
                     decision_var = self.model.BoolVar(
@@ -117,6 +117,12 @@ class LPJS:
                 for job in range(self.n_jobs)
                 for task in self.tasks[job]
                 for decision_var, _, cost in self.assignment_task[(job, task)]
+            )
+            # add cost of delay
+            + sum(
+                self.start_vars[job][task]
+                for job in range(self.n_jobs)
+                for task in self.tasks[job]
             )
         )
 
