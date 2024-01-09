@@ -2,6 +2,9 @@ from collections import defaultdict
 
 
 class Graph:
+    """
+    Graph class for tasks cycle detection
+    """
     def __init__(self, graph):
         self.graph = defaultdict(list)
         self.state = defaultdict(int)
