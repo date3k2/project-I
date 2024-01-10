@@ -9,7 +9,7 @@ Repository gồm:
 - Thư mục `results`: chứa kết quả chạy thử nghiệm
 
 ## Cài đặt
-Clone repository, sau đó chạy lệnh sau để cài đặt các thư viện cần thiết:
+Clone repository, sau đó chạy lệnh sau để cài đặt các thư viện cần thiết, yêu cầu Python phiên bản 3.11 trở lên:
 ```
 pip install -r requirements.txt
 ```
@@ -20,6 +20,7 @@ Vào thư mục `notebooks`:
 
 - `jssp-cp_sat.ipynb`: Demo giải bài toán bằng phương pháp **Lập trình ràng buộc (Constraint Programming)**
 - `jssp-mip.ipynb`: Demo giải bài toán bằng phương pháp **Quy hoạch nguyên (Mixed Integer Programming)**
+- `testing.ipynb`: Thử nghiệm các phương pháp trên trên các bộ dữ liệu benchmark
 
 Thư mục `results` chứa kết quả chạy thử nghiệm trước đó của các phương pháp trên trên các bộ dữ liệu benchmark Taillard và Demirkol.
 ### 2. Job Shop Scheduling biến thể
