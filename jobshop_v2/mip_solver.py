@@ -75,8 +75,7 @@ class LPJS(BaseJS):
                         precedence[
                             (machine, job1, task1, job2, task2)
                         ] = self.model.BoolVar(
-                            f"machine_{machine}_job_{job1}_task_{
-                                task1}_job_{job2}_task_{task2}"
+                            f"machine_{machine}_job_{job1}_task_{task1}_job_{job2}_task_{task2}"
                         )
         for machine in assignment_machine:
             for idx, (i, job1, task1) in enumerate(assignment_machine[machine]):
